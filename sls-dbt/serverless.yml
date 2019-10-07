@@ -1,0 +1,32 @@
+service: sls-dbt
+provider:
+  name: aws
+  runtime: python3.7
+  stage: dev
+  region: ap-southeast-2
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - ecs:RunTask
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - iam:PassRole
+      Resource: 
+        - 'Fn::ImportValue': fargate-vpc-ecs:ECSTaskExecutionRole
+
+functions:
+  runFargateTask:
+    handler: handler.hello
+    environment:
+      FARGATE_VPC: 
+        'Fn::ImportValue': fargate-vpc-ecs:VPCId
+      FARGATE_SN1: 
+        'Fn::ImportValue': fargate-vpc-ecs:PublicSubnetOne
+      FARGATE_SN2: 
+        'Fn::ImportValue': fargate-vpc-ecs:PublicSubnetTwo
+      FARGATE_SG: 
+        'Fn::ImportValue': fargate-vpc-ecs:FargateContainerSecurityGroup
+      FARGATE_CLUSTER: 
+        'Fn::ImportValue': fargate-vpc-ecs:ClusterName
+
