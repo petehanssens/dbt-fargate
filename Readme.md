@@ -18,7 +18,15 @@ Otherwise head over to their [website](https://www.getdbt.com/)
 2. Jump into the Jaffle Shop directory.
 3. Follow the ECR push commands to build and push the image up to the ECR.
 
-![ECR push command examples](images/ecr_push_commands.png)
+```sh
+$(aws ecr get-login --no-include-email --region ap-southeast-2)
+
+docker build -t fargate-dbt-bigquery .
+
+docker tag fargate-dbt-bigquery:latest <account_id>.dkr.ecr.ap-southeast-2.amazonaws.com/fargate-dbt-bigquery:latest
+
+docker push <account_id>.dkr.ecr.ap-southeast-2.amazonaws.com/fargate-dbt-bigquery:latest
+```
 
 4. Jump into the fargate directory and deploy:
 
@@ -28,3 +36,9 @@ Otherwise head over to their [website](https://www.getdbt.com/)
 5. Jump into the sls-dbt directory and deploy the lambda function via the serverless framework.
 6. Use an event to trigger the lambda function.
 
+
+## GCP Instructions
+
+```sh
+gcloud builds submit --config cloudbuild.yaml .
+```
